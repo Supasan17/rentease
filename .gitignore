@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+
+# Environment files
+.env
+.env.local
+*.env
+
+# Server uploads (ignore uploaded files, keep folder structure)
+server/uploads/*
+!server/uploads/.gitkeep
+
+# Build and OS files
+dist/
+build/
+.DS_Store
+Thumbs.db
+npm-debug.log*
