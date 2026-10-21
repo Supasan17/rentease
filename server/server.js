@@ -59,6 +59,11 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+/**
+ * API Routes
+ */
+app.use('/api/auth', require('./routes/authRoutes'));
+
 // Centralized error handling: Catch 404 for undefined routes
 app.use(notFound);
 
