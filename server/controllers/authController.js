@@ -7,6 +7,7 @@
 
 const User = require('../models/User');
 const generateToken = require('../utils/generateToken');
+const { SIGNUP_ROLES } = require('../validators/authValidators');
 
 /**
  * @desc    Register a new user
@@ -15,18 +16,8 @@ const generateToken = require('../utils/generateToken');
  */
 const register = async (req, res, next) => {
   try {
+    // Fields are already validated by registerRules (see validators/authValidators.js)
     const { name, email, password, role } = req.body;
-
-    // Validate required fields
-    if (!name || !email || !password) {
-      res.status(400);
-      return next(new Error('Please provide name, email, and password'));
-    }
-
-    if (password.length < 6) {
-      res.status(400);
-      return next(new Error('Password must be at least 6 characters long'));
-    }
 
     // Check if a user with this email already exists
     const userExists = await User.findOne({ email: email.toLowerCase() });
@@ -35,8 +26,8 @@ const register = async (req, res, next) => {
       return next(new Error('User already exists with this email address'));
     }
 
-    // Assign allowed role (default to 'renter')
-    const userRole = role && ['renter', 'owner', 'admin'].includes(role) ? role : 'renter';
+    // Assign signup role (default to 'renter'). Admin can never be self-assigned.
+    const userRole = SIGNUP_ROLES.includes(role) ? role : 'renter';
 
     // Create new user (password is automatically hashed via Mongoose pre-save hook)
     const user = await User.create({
@@ -71,13 +62,8 @@ const register = async (req, res, next) => {
  */
 const login = async (req, res, next) => {
   try {
+    // Fields are already validated by loginRules (see validators/authValidators.js)
     const { email, password } = req.body;
-
-    // Validate email and password presence
-    if (!email || !password) {
-      res.status(400);
-      return next(new Error('Please provide both email and password'));
-    }
 
     // Find user by lowercase email
     const user = await User.findOne({ email: email.toLowerCase() });
