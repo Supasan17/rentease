@@ -63,6 +63,7 @@ app.get('/api/health', (req, res) => {
  * API Routes
  */
 app.use('/api/auth', require('./routes/authRoutes'));
+app.use('/api/items', require('./routes/itemRoutes'));
 
 // Centralized error handling: Catch 404 for undefined routes
 app.use(notFound);
