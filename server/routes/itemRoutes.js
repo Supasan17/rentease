@@ -16,6 +16,7 @@ const {
 } = require('../controllers/itemController');
 const { protect, authorize } = require('../middleware/authMiddleware');
 const validate = require('../middleware/validateMiddleware');
+const { uploadItemImages } = require('../middleware/uploadMiddleware');
 const {
   itemIdRules,
   createItemRules,
@@ -26,9 +27,10 @@ const {
 router.get('/', getItems);
 router.get('/:id', itemIdRules, validate, getItemById);
 
-// Protected routes (ownership is checked in the controller for update and delete)
-router.post('/', protect, authorize('owner', 'admin'), createItemRules, validate, createItem);
-router.put('/:id', protect, authorize('owner', 'admin'), updateItemRules, validate, updateItem);
+// Protected routes (ownership is checked in the controller for update and delete).
+// Create and update accept multipart/form-data with up to 5 files in the 'images' field.
+router.post('/', protect, authorize('owner', 'admin'), uploadItemImages, createItemRules, validate, createItem);
+router.put('/:id', protect, authorize('owner', 'admin'), uploadItemImages, updateItemRules, validate, updateItem);
 router.delete('/:id', protect, authorize('owner', 'admin'), itemIdRules, validate, deleteItem);
 
 module.exports = router;

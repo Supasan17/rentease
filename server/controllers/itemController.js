@@ -3,9 +3,15 @@
  *
  * Manages household item listings: public browsing, creation by owners,
  * and updates or deletion restricted to the item's owner or an admin.
+ * Item images are uploaded with uploadItemImages and stored as '/uploads/<file>'.
  */
 
 const Item = require('../models/Item');
+const {
+  removeUploadedFiles,
+  removeImages,
+  getUploadedImagePaths
+} = require('../middleware/uploadMiddleware');
 
 // Fields a client may set on create or update. Owner and rating fields are server-managed.
 const EDITABLE_FIELDS = [
@@ -89,6 +95,8 @@ const createItem = async (req, res, next) => {
     // The logged-in user always becomes the owner
     data.owner = req.user._id;
 
+    data.images = getUploadedImagePaths(req);
+
     const item = await Item.create(data);
 
     res.status(201).json({
@@ -97,6 +105,7 @@ const createItem = async (req, res, next) => {
       item
     });
   } catch (error) {
+    removeUploadedFiles(req);
     next(error);
   }
 };
@@ -111,11 +120,13 @@ const updateItem = async (req, res, next) => {
     const item = await Item.findById(req.params.id);
 
     if (!item) {
+      removeUploadedFiles(req);
       res.status(404);
       return next(new Error('Item not found'));
     }
 
     if (!canModifyItem(req.user, item)) {
+      removeUploadedFiles(req);
       res.status(403);
       return next(new Error('Not authorized to update this item'));
     }
@@ -130,7 +141,15 @@ const updateItem = async (req, res, next) => {
       if (req.body.location.address !== undefined) item.location.address = req.body.location.address;
     }
 
+    // Newly uploaded images replace the existing ones
+    const newImages = getUploadedImagePaths(req);
+    const oldImages = newImages.length > 0 ? [...item.images] : [];
+    if (newImages.length > 0) item.images = newImages;
+
     const updatedItem = await item.save();
+
+    // Remove the replaced image files only after the update is saved
+    removeImages(oldImages);
 
     res.status(200).json({
       success: true,
@@ -138,6 +157,7 @@ const updateItem = async (req, res, next) => {
       item: updatedItem
     });
   } catch (error) {
+    removeUploadedFiles(req);
     next(error);
   }
 };
@@ -162,6 +182,8 @@ const deleteItem = async (req, res, next) => {
     }
 
     await item.deleteOne();
+
+    removeImages(item.images);
 
     res.status(200).json({
       success: true,
