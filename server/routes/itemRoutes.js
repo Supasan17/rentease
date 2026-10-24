@@ -18,13 +18,14 @@ const { protect, authorize } = require('../middleware/authMiddleware');
 const validate = require('../middleware/validateMiddleware');
 const { uploadItemImages } = require('../middleware/uploadMiddleware');
 const {
+  listItemsRules,
   itemIdRules,
   createItemRules,
   updateItemRules
 } = require('../validators/itemValidators');
 
-// Public routes
-router.get('/', getItems);
+// Public routes. GET / supports ?search=&category=&minPrice=&maxPrice=&city=&sort=&page=&limit=
+router.get('/', listItemsRules, validate, getItems);
 router.get('/:id', itemIdRules, validate, getItemById);
 
 // Protected routes (ownership is checked in the controller for update and delete).

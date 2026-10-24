@@ -5,8 +5,52 @@
  * Used together with the validate middleware.
  */
 
-const { body, param } = require('express-validator');
+const { body, param, query } = require('express-validator');
 const { ITEM_CATEGORIES, ITEM_CONDITIONS } = require('../models/Item');
+
+const SORT_VALUES = ['newest', 'oldest', 'price_asc', 'price_desc', 'rating'];
+
+/**
+ * Rules for GET /api/items (search, filters, sorting and pagination)
+ */
+const listItemsRules = [
+  query('search')
+    .optional()
+    .trim()
+    .isLength({ max: 100 }).withMessage('Search text cannot exceed 100 characters'),
+  query('category')
+    .optional({ values: 'falsy' })
+    .isIn(ITEM_CATEGORIES).withMessage(`Category must be one of: ${ITEM_CATEGORIES.join(', ')}`),
+  query('minPrice')
+    .optional({ values: 'falsy' })
+    .isFloat({ min: 0 }).withMessage('minPrice must be a non-negative number')
+    .toFloat(),
+  query('maxPrice')
+    .optional({ values: 'falsy' })
+    .isFloat({ min: 0 }).withMessage('maxPrice must be a non-negative number')
+    .toFloat()
+    .custom((value, { req }) => {
+      const minPrice = parseFloat(req.query.minPrice);
+      if (!Number.isNaN(minPrice) && value < minPrice) {
+        throw new Error('maxPrice cannot be less than minPrice');
+      }
+      return true;
+    }),
+  query('city')
+    .optional()
+    .trim(),
+  query('sort')
+    .optional({ values: 'falsy' })
+    .isIn(SORT_VALUES).withMessage(`Sort must be one of: ${SORT_VALUES.join(', ')}`),
+  query('page')
+    .optional({ values: 'falsy' })
+    .isInt({ min: 1 }).withMessage('Page must be a positive whole number')
+    .toInt(),
+  query('limit')
+    .optional({ values: 'falsy' })
+    .isInt({ min: 1, max: 50 }).withMessage('Limit must be a whole number between 1 and 50')
+    .toInt()
+];
 
 /**
  * Rules for routes with an :id parameter
@@ -98,6 +142,7 @@ const updateItemRules = [
 ];
 
 module.exports = {
+  listItemsRules,
   itemIdRules,
   createItemRules,
   updateItemRules

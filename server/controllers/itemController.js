@@ -24,6 +24,18 @@ const EDITABLE_FIELDS = [
   'isAvailable'
 ];
 
+// Sort options accepted by GET /api/items (?sort=)
+const SORT_OPTIONS = {
+  newest: { createdAt: -1 },
+  oldest: { createdAt: 1 },
+  price_asc: { pricePerDay: 1 },
+  price_desc: { pricePerDay: -1 },
+  rating: { averageRating: -1, numReviews: -1 }
+};
+
+const DEFAULT_LIMIT = 12;
+const MAX_LIMIT = 50;
+
 /**
  * Checks whether the logged-in user may modify the given item.
  */
@@ -31,20 +43,55 @@ const canModifyItem = (user, item) =>
   user.role === 'admin' || item.owner.toString() === user._id.toString();
 
 /**
- * @desc    Get all items
- * @route   GET /api/items
+ * Escapes special characters so user input can be used safely inside a RegExp.
+ */
+const escapeRegex = (text) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+/**
+ * @desc    Get items with search, filters, sorting and pagination
+ * @route   GET /api/items?search=&category=&minPrice=&maxPrice=&city=&sort=&page=&limit=
  * @access  Public
  */
 const getItems = async (req, res, next) => {
   try {
-    const items = await Item.find()
-      .populate('owner', 'name')
-      .sort({ createdAt: -1 });
+    // Query values are already validated and converted by listItemsRules
+    const { search, category, minPrice, maxPrice, city, sort } = req.query;
+    const page = req.query.page || 1;
+    const limit = Math.min(req.query.limit || DEFAULT_LIMIT, MAX_LIMIT);
+
+    const filter = {};
+
+    // Keyword search uses the text index on title and description
+    if (search) filter.$text = { $search: search };
+
+    if (category) filter.category = category;
+
+    if (minPrice !== undefined || maxPrice !== undefined) {
+      filter.pricePerDay = {};
+      if (minPrice !== undefined) filter.pricePerDay.$gte = minPrice;
+      if (maxPrice !== undefined) filter.pricePerDay.$lte = maxPrice;
+    }
+
+    // City match is case-insensitive and exact (ignoring surrounding spaces)
+    if (city) filter['location.city'] = new RegExp(`^${escapeRegex(city)}$`, 'i');
+
+    const sortBy = SORT_OPTIONS[sort] || SORT_OPTIONS.newest;
+
+    const [items, total] = await Promise.all([
+      Item.find(filter)
+        .populate('owner', 'name')
+        .sort(sortBy)
+        .skip((page - 1) * limit)
+        .limit(limit),
+      Item.countDocuments(filter)
+    ]);
 
     res.status(200).json({
       success: true,
-      count: items.length,
-      items
+      items,
+      page,
+      pages: Math.ceil(total / limit),
+      total
     });
   } catch (error) {
     next(error);
