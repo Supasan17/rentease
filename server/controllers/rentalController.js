@@ -3,14 +3,26 @@
  *
  * Manages rental bookings. Renters request an item for a date range; the
  * request is rejected if the item is the renter's own, is unavailable, or
- * its dates overlap another pending, approved or active rental.
+ * its dates overlap another pending, approved or active rental. Prices are
+ * always calculated on the server (see utils/calculateRentalPrice.js).
  */
 
 const Item = require('../models/Item');
 const Rental = require('../models/Rental');
 const { BLOCKING_STATUSES } = Rental;
+const { calculateRentalPrice } = require('../utils/calculateRentalPrice');
 
-const MS_PER_DAY = 24 * 60 * 60 * 1000;
+/**
+ * Checks whether the logged-in user may view the given rental.
+ * Works with both populated and unpopulated renter / owner fields.
+ */
+const canViewRental = (user, rental) => {
+  const userId = user._id.toString();
+  const renterId = (rental.renter._id || rental.renter).toString();
+  const ownerId = (rental.owner._id || rental.owner).toString();
+
+  return user.role === 'admin' || renterId === userId || ownerId === userId;
+};
 
 /**
  * @desc    Create a rental booking request
@@ -52,8 +64,8 @@ const createRental = async (req, res, next) => {
       return next(new Error('This item is already booked for some of the selected dates'));
     }
 
-    // Both the start and end dates count as rental days
-    const totalDays = Math.round((endDate - startDate) / MS_PER_DAY) + 1;
+    // Any price fields in the request body are ignored
+    const { totalDays, rentalCost, deposit, totalPrice } = calculateRentalPrice(item, startDate, endDate);
 
     const rental = await Rental.create({
       item: item._id,
@@ -62,14 +74,52 @@ const createRental = async (req, res, next) => {
       startDate,
       endDate,
       totalDays,
-      totalPrice: totalDays * item.pricePerDay,
-      deposit: item.deposit,
+      totalPrice,
+      deposit,
       message
     });
 
     res.status(201).json({
       success: true,
       message: 'Booking request sent to the owner',
+      rental,
+      priceBreakdown: {
+        pricePerDay: item.pricePerDay,
+        totalDays,
+        rentalCost,
+        deposit,
+        totalPrice
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * @desc    Get a single rental by ID
+ * @route   GET /api/rentals/:id
+ * @access  Private (the rental's renter or owner, admin)
+ */
+const getRentalById = async (req, res, next) => {
+  try {
+    const rental = await Rental.findById(req.params.id)
+      .populate('item', 'title images pricePerDay deposit location')
+      .populate('renter', 'name email')
+      .populate('owner', 'name email');
+
+    if (!rental) {
+      res.status(404);
+      return next(new Error('Rental not found'));
+    }
+
+    if (!canViewRental(req.user, rental)) {
+      res.status(403);
+      return next(new Error('Not authorized to view this rental'));
+    }
+
+    res.status(200).json({
+      success: true,
       rental
     });
   } catch (error) {
@@ -78,5 +128,6 @@ const createRental = async (req, res, next) => {
 };
 
 module.exports = {
-  createRental
+  createRental,
+  getRentalById
 };
