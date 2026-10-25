@@ -14,6 +14,7 @@ const {
   updateItem,
   deleteItem
 } = require('../controllers/itemController');
+const { getItemReviews } = require('../controllers/reviewController');
 const { protect, authorize } = require('../middleware/authMiddleware');
 const validate = require('../middleware/validateMiddleware');
 const { uploadItemImages } = require('../middleware/uploadMiddleware');
@@ -27,6 +28,7 @@ const {
 // Public routes. GET / supports ?search=&category=&minPrice=&maxPrice=&city=&sort=&page=&limit=
 router.get('/', listItemsRules, validate, getItems);
 router.get('/:id', itemIdRules, validate, getItemById);
+router.get('/:id/reviews', itemIdRules, validate, getItemReviews);
 
 // Protected routes (ownership is checked in the controller for update and delete).
 // Create and update accept multipart/form-data with up to 5 files in the 'images' field.
