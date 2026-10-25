@@ -1,11 +1,12 @@
 /**
  * Rental Validation Rules
  *
- * express-validator rule chains for creating and looking up rental bookings.
+ * express-validator rule chains for creating, listing and looking up rental bookings.
  * Used together with the validate middleware.
  */
 
-const { body, param } = require('express-validator');
+const { body, param, query } = require('express-validator');
+const { RENTAL_STATUSES } = require('../models/Rental');
 
 /**
  * Returns today's date at midnight UTC, based on the server's local date,
@@ -19,6 +20,15 @@ const getToday = () => new Date(new Date().toLocaleDateString('en-CA'));
 const rentalIdRules = [
   param('id')
     .isMongoId().withMessage('Invalid rental ID')
+];
+
+/**
+ * Rules for GET /api/rentals/my and /api/rentals/requests
+ */
+const listRentalsRules = [
+  query('status')
+    .optional({ values: 'falsy' })
+    .isIn(RENTAL_STATUSES).withMessage(`Status must be one of: ${RENTAL_STATUSES.join(', ')}`)
 ];
 
 /**
@@ -56,5 +66,6 @@ const createRentalRules = [
 
 module.exports = {
   rentalIdRules,
+  listRentalsRules,
   createRentalRules
 };
