@@ -1,7 +1,7 @@
 /**
  * Authentication Controller
  * 
- * Manages user registration, user login, and profile retrieval.
+ * Manages user registration, user login, and profile retrieval and updates.
  * Issues JSON Web Tokens (JWT) for authenticated sessions.
  */
 
@@ -108,8 +108,60 @@ const getMe = async (req, res, next) => {
   }
 };
 
+/**
+ * @desc    Update currently logged-in user profile
+ * @route   PUT /api/auth/me
+ * @access  Private (Requires JWT token)
+ */
+const updateMe = async (req, res, next) => {
+  try {
+    // Fields are already validated by updateProfileRules (see validators/authValidators.js)
+    const { name, phone, address, currentPassword, newPassword } = req.body;
+
+    // Load the full user document (req.user has no password hash)
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      res.status(404);
+      return next(new Error('User not found'));
+    }
+
+    if (name !== undefined) user.name = name;
+    if (phone !== undefined) user.phone = phone || undefined;
+    if (address !== undefined) user.address = address || undefined;
+
+    // Changing the password requires the current one
+    if (newPassword) {
+      if (!(await user.matchPassword(currentPassword))) {
+        res.status(401);
+        return next(new Error('Current password is incorrect'));
+      }
+      // Hashed by the Mongoose pre-save hook
+      user.password = newPassword;
+    }
+
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: newPassword ? 'Profile and password updated' : 'Profile updated',
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        phone: user.phone,
+        address: user.address,
+        createdAt: user.createdAt
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   register,
   login,
-  getMe
+  getMe,
+  updateMe
 };

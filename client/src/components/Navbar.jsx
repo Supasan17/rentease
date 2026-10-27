@@ -2,8 +2,9 @@
  * Navbar Component
  *
  * Top navigation bar with the RentEase brand and the main links.
- * Guests see login and sign-up links; logged-in users see their name,
- * role and a logout button. Collapses into a toggle menu on small screens.
+ * Guests see login and sign-up links; logged-in users see their name and
+ * role (linking to their profile) and a logout button. Collapses into a
+ * toggle menu on small screens.
  */
 
 import { useState } from 'react';
@@ -33,12 +34,12 @@ function Navbar() {
       </NavLink>
       {user ? (
         <>
-          <span className="block px-3 py-2 text-sm text-gray-600">
+          <NavLink to="/profile" className={linkClass} onClick={() => setOpen(false)}>
             Hi, <span className="font-medium text-gray-900">{user.name}</span>{' '}
             <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium capitalize text-emerald-700">
               {user.role}
             </span>
-          </span>
+          </NavLink>
           <button
             type="button"
             onClick={handleLogout}

@@ -37,6 +37,16 @@ const userSchema = new mongoose.Schema(
       enum: ['renter', 'owner', 'admin'],
       default: 'renter'
     },
+    phone: {
+      type: String,
+      trim: true,
+      maxlength: [20, 'Phone number cannot exceed 20 characters']
+    },
+    address: {
+      type: String,
+      trim: true,
+      maxlength: [200, 'Address cannot exceed 200 characters']
+    },
     createdAt: {
       type: Date,
       default: Date.now

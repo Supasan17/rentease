@@ -2,7 +2,7 @@
  * Auth Context
  *
  * Holds the logged-in user and JWT for the whole app. Provides login,
- * register and logout helpers, and restores the session on page load by
+ * register, logout and updateProfile helpers, and restores the session on page load by
  * calling /api/auth/me with the saved token.
  */
 
@@ -71,6 +71,13 @@ export function AuthProvider({ children }) {
     [saveSession]
   );
 
+  // Save profile changes and keep the stored user in sync
+  const updateProfile = useCallback(async (details) => {
+    const { data } = await api.put('/auth/me', details);
+    setUser(data.user);
+    return data;
+  }, []);
+
   const logout = useCallback(() => {
     localStorage.removeItem(TOKEN_KEY);
     setToken(null);
@@ -78,8 +85,8 @@ export function AuthProvider({ children }) {
   }, []);
 
   const value = useMemo(
-    () => ({ user, token, loading, isAuthenticated: Boolean(user), login, register, logout }),
-    [user, token, loading, login, register, logout]
+    () => ({ user, token, loading, isAuthenticated: Boolean(user), login, register, logout, updateProfile }),
+    [user, token, loading, login, register, logout, updateProfile]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
