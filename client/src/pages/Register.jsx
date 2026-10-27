@@ -3,13 +3,14 @@
  *
  * Sign-up form where new users choose to join as a renter or an owner.
  * Uses the same rules as the server's registerRules, then posts to
- * /api/auth/register, saves the returned JWT and goes back to browsing.
+ * registers through the auth context and goes back to browsing.
  * Server error messages are shown above the form.
  */
 
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import api, { TOKEN_KEY, getErrorMessage } from '../api/axios.js';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { getErrorMessage } from '../api/axios.js';
+import { useAuth } from '../context/AuthContext.jsx';
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -50,6 +51,7 @@ const inputClass =
 
 function Register() {
   const navigate = useNavigate();
+  const { user, register } = useAuth();
   const [form, setForm] = useState({
     name: '',
     email: '',
@@ -77,20 +79,23 @@ function Register() {
 
     setSubmitting(true);
     try {
-      const { data } = await api.post('/auth/register', {
+      await register({
         name: form.name.trim(),
         email: form.email.trim(),
         password: form.password,
         role: form.role,
       });
-      localStorage.setItem(TOKEN_KEY, data.token);
-      navigate('/');
+      navigate('/', { replace: true });
     } catch (error) {
       setServerError(getErrorMessage(error));
-    } finally {
       setSubmitting(false);
     }
   };
+
+  // Already logged in, so there is nothing to do here
+  if (user && !submitting) {
+    return <Navigate to="/" replace />;
+  }
 
   return (
     <section className="mx-auto max-w-md">

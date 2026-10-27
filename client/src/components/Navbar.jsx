@@ -2,11 +2,13 @@
  * Navbar Component
  *
  * Top navigation bar with the RentEase brand and the main links.
- * Collapses into a toggle menu on small screens.
+ * Guests see login and sign-up links; logged-in users see their name,
+ * role and a logout button. Collapses into a toggle menu on small screens.
  */
 
 import { useState } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext.jsx';
 
 const linkClass = ({ isActive }) =>
   `block rounded-md px-3 py-2 text-sm font-medium ${
@@ -15,18 +17,48 @@ const linkClass = ({ isActive }) =>
 
 function Navbar() {
   const [open, setOpen] = useState(false);
+  const { user, loading, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    setOpen(false);
+    navigate('/');
+  };
 
   const links = (
     <>
       <NavLink to="/" end className={linkClass} onClick={() => setOpen(false)}>
         Browse
       </NavLink>
-      <NavLink to="/login" className={linkClass} onClick={() => setOpen(false)}>
-        Login
-      </NavLink>
-      <NavLink to="/register" className={linkClass} onClick={() => setOpen(false)}>
-        Sign up
-      </NavLink>
+      {user ? (
+        <>
+          <span className="block px-3 py-2 text-sm text-gray-600">
+            Hi, <span className="font-medium text-gray-900">{user.name}</span>{' '}
+            <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium capitalize text-emerald-700">
+              {user.role}
+            </span>
+          </span>
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="block w-full rounded-md px-3 py-2 text-left text-sm font-medium text-gray-700 hover:text-emerald-600"
+          >
+            Logout
+          </button>
+        </>
+      ) : (
+        !loading && (
+          <>
+            <NavLink to="/login" className={linkClass} onClick={() => setOpen(false)}>
+              Login
+            </NavLink>
+            <NavLink to="/register" className={linkClass} onClick={() => setOpen(false)}>
+              Sign up
+            </NavLink>
+          </>
+        )
+      )}
     </>
   );
 

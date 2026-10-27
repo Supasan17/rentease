@@ -2,13 +2,15 @@
  * Login Page
  *
  * Email and password form. Checks the fields on the client first, then
- * posts to /api/auth/login, saves the returned JWT and goes back to browsing.
+ * logs in through the auth context and returns to the page the user came
+ * from (or browsing).
  * Server error messages are shown above the form.
  */
 
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import api, { TOKEN_KEY, getErrorMessage } from '../api/axios.js';
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { getErrorMessage } from '../api/axios.js';
+import { useAuth } from '../context/AuthContext.jsx';
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -27,6 +29,9 @@ const validate = ({ email, password }) => {
 
 function Login() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { user, login } = useAuth();
+  const redirectTo = location.state?.from?.pathname || '/';
   const [form, setForm] = useState({ email: '', password: '' });
   const [fieldErrors, setFieldErrors] = useState({});
   const [serverError, setServerError] = useState('');
@@ -48,18 +53,18 @@ function Login() {
 
     setSubmitting(true);
     try {
-      const { data } = await api.post('/auth/login', {
-        email: form.email.trim(),
-        password: form.password,
-      });
-      localStorage.setItem(TOKEN_KEY, data.token);
-      navigate('/');
+      await login(form.email.trim(), form.password);
+      navigate(redirectTo, { replace: true });
     } catch (error) {
       setServerError(getErrorMessage(error));
-    } finally {
       setSubmitting(false);
     }
   };
+
+  // Already logged in, so there is nothing to do here
+  if (user && !submitting) {
+    return <Navigate to={redirectTo} replace />;
+  }
 
   return (
     <section className="mx-auto max-w-md">
