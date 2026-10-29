@@ -3,13 +3,14 @@
  *
  * Shows one item from GET /api/items/:id: an image gallery, price and
  * deposit, condition, location, owner and description, followed by its
- * reviews from GET /api/items/:id/reviews. The item's owner (or an admin)
- * also sees an edit button.
+ * reviews from GET /api/items/:id/reviews. Renters can book the item for
+ * a date range, and the item's owner (or an admin) also sees an edit button.
  */
 
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import api, { getErrorMessage } from '../api/axios.js';
+import BookingForm from '../components/BookingForm.jsx';
 import ImageGallery from '../components/ImageGallery.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
 import StarRating from '../components/StarRating.jsx';
@@ -172,6 +173,7 @@ function ItemDetail() {
             >
               {item.isAvailable ? 'Available to rent' : 'Not available right now'}
             </p>
+            <BookingForm item={item} />
           </div>
 
           <dl className="mt-6 grid grid-cols-2 gap-4 text-sm">

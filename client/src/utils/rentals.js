@@ -29,3 +29,18 @@ export const formatRentalDate = (date) =>
     day: 'numeric',
     timeZone: 'UTC',
   });
+
+/**
+ * Today's local date as 'YYYY-MM-DD', for date input minimums.
+ */
+export const getTodayString = () => new Date().toLocaleDateString('en-CA');
+
+/**
+ * Count the days in a booking, counting both the start and end day,
+ * the same way the server does. Returns 0 for missing or reversed dates.
+ */
+export const countRentalDays = (startDate, endDate) => {
+  if (!startDate || !endDate) return 0;
+  const days = Math.round((new Date(endDate) - new Date(startDate)) / 86400000) + 1;
+  return days > 0 ? days : 0;
+};
