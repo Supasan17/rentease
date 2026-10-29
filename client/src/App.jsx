@@ -11,6 +11,8 @@ import ProtectedRoute from './components/ProtectedRoute.jsx';
 import Home from './pages/Home.jsx';
 import ItemDetail from './pages/ItemDetail.jsx';
 import ItemForm from './pages/ItemForm.jsx';
+import MyListings from './pages/MyListings.jsx';
+import RentalRequests from './pages/RentalRequests.jsx';
 import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
 import Profile from './pages/Profile.jsx';
@@ -30,6 +32,10 @@ function App() {
         <Route element={<ProtectedRoute roles={['owner', 'admin']} />}>
           <Route path="/items/new" element={<ItemForm />} />
           <Route path="/items/:id/edit" element={<ItemForm />} />
+          <Route path="/my-listings" element={<MyListings />} />
+        </Route>
+        <Route element={<ProtectedRoute roles={['owner']} />}>
+          <Route path="/rental-requests" element={<RentalRequests />} />
         </Route>
         <Route path="*" element={<NotFound />} />
       </Route>

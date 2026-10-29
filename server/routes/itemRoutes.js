@@ -9,6 +9,7 @@ const express = require('express');
 const router = express.Router();
 const {
   getItems,
+  getMyItems,
   getItemById,
   createItem,
   updateItem,
@@ -27,6 +28,11 @@ const {
 
 // Public routes. GET / supports ?search=&category=&minPrice=&maxPrice=&city=&sort=&page=&limit=
 router.get('/', listItemsRules, validate, getItems);
+
+// The logged-in owner's own listings. Must come before '/:id'.
+router.get('/mine', protect, authorize('owner', 'admin'), getMyItems);
+
+// Public item details and reviews
 router.get('/:id', itemIdRules, validate, getItemById);
 router.get('/:id/reviews', itemIdRules, validate, getItemReviews);
 

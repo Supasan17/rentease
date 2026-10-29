@@ -99,6 +99,25 @@ const getItems = async (req, res, next) => {
 };
 
 /**
+ * @desc    Get the logged-in user's own item listings
+ * @route   GET /api/items/mine
+ * @access  Private (owner, admin)
+ */
+const getMyItems = async (req, res, next) => {
+  try {
+    const items = await Item.find({ owner: req.user._id }).sort({ createdAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      count: items.length,
+      items
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
  * @desc    Get a single item by ID
  * @route   GET /api/items/:id
  * @access  Public
@@ -243,6 +262,7 @@ const deleteItem = async (req, res, next) => {
 
 module.exports = {
   getItems,
+  getMyItems,
   getItemById,
   createItem,
   updateItem,
