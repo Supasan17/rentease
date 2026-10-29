@@ -3,13 +3,15 @@
  *
  * Shows one item from GET /api/items/:id: an image gallery, price and
  * deposit, condition, location, owner and description, followed by its
- * reviews from GET /api/items/:id/reviews.
+ * reviews from GET /api/items/:id/reviews. The item's owner (or an admin)
+ * also sees an edit button.
  */
 
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import api, { getErrorMessage } from '../api/axios.js';
 import ImageGallery from '../components/ImageGallery.jsx';
+import { useAuth } from '../context/AuthContext.jsx';
 import StarRating from '../components/StarRating.jsx';
 import { formatPrice } from '../utils/items.js';
 
@@ -67,6 +69,7 @@ function Reviews({ reviews, averageRating, numReviews }) {
 
 function ItemDetail() {
   const { id } = useParams();
+  const { user } = useAuth();
   const [item, setItem] = useState(null);
   const [reviewData, setReviewData] = useState({ reviews: [], averageRating: 0, numReviews: 0 });
   const [loading, setLoading] = useState(true);
@@ -116,11 +119,23 @@ function ItemDetail() {
     );
   }
 
+  const canEdit = user && (user.role === 'admin' || item.owner?._id === user._id);
+
   return (
     <article>
-      <Link to="/" className="text-sm font-medium text-emerald-600 hover:underline">
-        ← Back to browsing
-      </Link>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <Link to="/" className="text-sm font-medium text-emerald-600 hover:underline">
+          ← Back to browsing
+        </Link>
+        {canEdit && (
+          <Link
+            to={`/items/${item._id}/edit`}
+            className="rounded-md border border-emerald-600 px-3 py-1.5 text-sm font-medium text-emerald-700 hover:bg-emerald-50"
+          >
+            Edit item
+          </Link>
+        )}
+      </div>
 
       <div className="mt-4 grid gap-8 lg:grid-cols-2">
         <ImageGallery images={item.images} title={item.title} />

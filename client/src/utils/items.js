@@ -1,7 +1,8 @@
 /**
  * Item Helpers
  *
- * Shared item constants (categories and sort options, matching the server)
+ * Shared item constants (categories, conditions and sort options, matching
+ * the server)
  * and small formatting helpers for prices and image URLs.
  */
 
@@ -14,6 +15,13 @@ export const CATEGORIES = [
   'sports',
   'party',
   'other',
+];
+
+export const CONDITIONS = [
+  { value: 'new', label: 'New' },
+  { value: 'like-new', label: 'Like new' },
+  { value: 'good', label: 'Good' },
+  { value: 'fair', label: 'Fair' },
 ];
 
 export const SORT_OPTIONS = [

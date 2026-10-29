@@ -3,7 +3,8 @@
  *
  * Top navigation bar with the RentEase brand and the main links.
  * Guests see login and sign-up links; logged-in users see their name and
- * role (linking to their profile) and a logout button. Collapses into a
+ * role (linking to their profile) and a logout button, and owners and
+ * admins also get a link to list a new item. Collapses into a
  * toggle menu on small screens.
  */
 
@@ -34,6 +35,11 @@ function Navbar() {
       </NavLink>
       {user ? (
         <>
+          {['owner', 'admin'].includes(user.role) && (
+            <NavLink to="/items/new" className={linkClass} onClick={() => setOpen(false)}>
+              List an item
+            </NavLink>
+          )}
           <NavLink to="/profile" className={linkClass} onClick={() => setOpen(false)}>
             Hi, <span className="font-medium text-gray-900">{user.name}</span>{' '}
             <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium capitalize text-emerald-700">

@@ -10,6 +10,7 @@ import Layout from './components/Layout.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
 import Home from './pages/Home.jsx';
 import ItemDetail from './pages/ItemDetail.jsx';
+import ItemForm from './pages/ItemForm.jsx';
 import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
 import Profile from './pages/Profile.jsx';
@@ -25,6 +26,10 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route element={<ProtectedRoute />}>
           <Route path="/profile" element={<Profile />} />
+        </Route>
+        <Route element={<ProtectedRoute roles={['owner', 'admin']} />}>
+          <Route path="/items/new" element={<ItemForm />} />
+          <Route path="/items/:id/edit" element={<ItemForm />} />
         </Route>
         <Route path="*" element={<NotFound />} />
       </Route>
