@@ -1,0 +1,19 @@
+# Render Blueprint for the RentEase API.
+# Secrets marked sync: false are entered in the Render dashboard.
+services:
+  - type: web
+    name: rentease-api
+    runtime: node
+    rootDir: server
+    buildCommand: npm ci
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGO_URI
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CLIENT_URL
+        sync: false

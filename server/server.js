@@ -21,9 +21,6 @@ const connectDB = require('./config/db');
 // Import centralized error handling middleware
 const { notFound, errorHandler } = require('./middleware/errorMiddleware');
 
-// Initialize MongoDB connection
-connectDB();
-
 // Create Express application instance
 const app = express();
 
@@ -93,10 +90,18 @@ app.use(notFound);
 // Centralized error handling: Global custom error handler
 app.use(errorHandler);
 
-// Define server port from environment variables, defaulting to 5000
-const PORT = process.env.PORT || 5000;
+// Connect and start listening only when run directly, so tests can import the app
+if (require.main === module) {
+  // Initialize MongoDB connection
+  connectDB();
 
-// Start listening for incoming requests
-app.listen(PORT, () => {
-  console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
-});
+  // Define server port from environment variables, defaulting to 5000
+  const PORT = process.env.PORT || 5000;
+
+  // Start listening for incoming requests
+  app.listen(PORT, () => {
+    console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
+  });
+}
+
+module.exports = app;
