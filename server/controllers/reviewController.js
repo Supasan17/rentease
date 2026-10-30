@@ -36,6 +36,11 @@ const createReview = async (req, res, next) => {
       return next(new Error('You can only review a rental after it has been returned'));
     }
 
+    if (!(await Item.exists({ _id: rental.item }))) {
+      res.status(400);
+      return next(new Error('This item no longer exists, so it cannot be reviewed'));
+    }
+
     const alreadyReviewed = await Review.exists({ rental: rental._id });
 
     if (alreadyReviewed) {

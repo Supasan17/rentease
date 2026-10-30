@@ -10,6 +10,8 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import api, { getErrorMessage } from '../api/axios.js';
+import Spinner from '../components/Spinner.jsx';
+import { useToast } from '../context/ToastContext.jsx';
 import ReviewForm from '../components/ReviewForm.jsx';
 import StatusBadge from '../components/StatusBadge.jsx';
 import { formatPrice } from '../utils/items.js';
@@ -19,6 +21,7 @@ import { RENTAL_STATUSES, formatRentalDate } from '../utils/rentals.js';
 const CANCELLABLE_STATUSES = ['pending', 'approved'];
 
 function MyRentals() {
+  const showToast = useToast();
   const [status, setStatus] = useState('');
   const [rentals, setRentals] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -62,6 +65,7 @@ function MyRentals() {
           .map((current) => (current._id === rental._id ? { ...current, status: data.rental.status } : current))
           .filter((current) => !status || current.status === status)
       );
+      showToast('Booking cancelled');
     } catch (err) {
       setActionError(getErrorMessage(err));
     } finally {
@@ -73,6 +77,7 @@ function MyRentals() {
     setRentals((prev) =>
       prev.map((current) => (current._id === rentalId ? { ...current, reviewed: true } : current))
     );
+    showToast('Thanks for your review!');
   };
 
   return (
@@ -109,7 +114,7 @@ function MyRentals() {
       )}
 
       {loading ? (
-        <p className="mt-6 text-sm text-gray-600">Loading your rentals...</p>
+        <Spinner label="Loading your rentals..." />
       ) : (
         !error &&
         (rentals.length === 0 ? (

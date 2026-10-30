@@ -10,6 +10,8 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import api, { getErrorMessage } from '../api/axios.js';
+import Spinner from '../components/Spinner.jsx';
+import { useToast } from '../context/ToastContext.jsx';
 import StatusBadge from '../components/StatusBadge.jsx';
 import { formatPrice } from '../utils/items.js';
 import { RENTAL_STATUSES, formatRentalDate } from '../utils/rentals.js';
@@ -34,6 +36,7 @@ const ACTION_STYLES = {
 };
 
 function RentalRequests() {
+  const showToast = useToast();
   const [status, setStatus] = useState('');
   const [rentals, setRentals] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -77,6 +80,7 @@ function RentalRequests() {
           .map((current) => (current._id === rental._id ? { ...current, status: data.rental.status } : current))
           .filter((current) => !status || current.status === status)
       );
+      showToast(`Rental ${data.rental.status}`);
     } catch (err) {
       setActionError(getErrorMessage(err));
     } finally {
@@ -118,7 +122,7 @@ function RentalRequests() {
       )}
 
       {loading ? (
-        <p className="mt-6 text-sm text-gray-600">Loading requests...</p>
+        <Spinner label="Loading requests..." />
       ) : (
         !error &&
         (rentals.length === 0 ? (

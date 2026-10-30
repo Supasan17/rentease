@@ -10,6 +10,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import api, { getErrorMessage } from '../api/axios.js';
+import Spinner from '../components/Spinner.jsx';
 import BookingForm from '../components/BookingForm.jsx';
 import ImageGallery from '../components/ImageGallery.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
@@ -105,7 +106,7 @@ function ItemDetail() {
   }, [id]);
 
   if (loading) {
-    return <p className="py-12 text-center text-gray-600">Loading item...</p>;
+    return <Spinner label="Loading item..." />;
   }
 
   if (error) {

@@ -9,6 +9,8 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import api, { getErrorMessage } from '../api/axios.js';
+import Spinner from '../components/Spinner.jsx';
+import { useToast } from '../context/ToastContext.jsx';
 import StatusBadge from '../components/StatusBadge.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
 import { formatPrice } from '../utils/items.js';
@@ -49,6 +51,7 @@ function Table({ headers, children }) {
 
 function AdminDashboard() {
   const { user: currentUser } = useAuth();
+  const showToast = useToast();
   const [tab, setTab] = useState('users');
   const [stats, setStats] = useState(null);
   const [data, setData] = useState({ users: [], items: [], rentals: [] });
@@ -103,6 +106,7 @@ function AdminDashboard() {
         ...prev,
         users: prev.users.map((current) => (current._id === user._id ? res.user : current)),
       }));
+      showToast(res.message);
     } catch (err) {
       setActionError(getErrorMessage(err));
     } finally {
@@ -119,6 +123,7 @@ function AdminDashboard() {
       await api.delete(`/admin/items/${item._id}`);
       setData((prev) => ({ ...prev, items: prev.items.filter((current) => current._id !== item._id) }));
       setStats((prev) => ({ ...prev, items: prev.items - 1 }));
+      showToast('Item deleted');
     } catch (err) {
       setActionError(getErrorMessage(err));
     } finally {
@@ -127,7 +132,7 @@ function AdminDashboard() {
   };
 
   if (loading) {
-    return <p className="py-12 text-center text-gray-600">Loading dashboard...</p>;
+    return <Spinner label="Loading dashboard..." />;
   }
 
   if (error) {

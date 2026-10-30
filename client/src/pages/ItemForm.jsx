@@ -12,6 +12,8 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import api, { getErrorMessage } from '../api/axios.js';
+import Spinner from '../components/Spinner.jsx';
+import { useToast } from '../context/ToastContext.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
 import { CATEGORIES, CONDITIONS, getImageUrl } from '../utils/items.js';
 
@@ -111,6 +113,7 @@ function Field({ id, label, error, children }) {
 }
 
 function ItemForm() {
+  const showToast = useToast();
   const { id } = useParams();
   const isEdit = Boolean(id);
   const { user } = useAuth();
@@ -213,6 +216,7 @@ function ItemForm() {
     try {
       const body = toFormData(form, images);
       const { data } = isEdit ? await api.put(`/items/${id}`, body) : await api.post('/items', body);
+      showToast(isEdit ? 'Item updated' : 'Item listed');
       navigate(`/items/${data.item._id}`);
     } catch (error) {
       setServerError(getErrorMessage(error));
@@ -221,7 +225,7 @@ function ItemForm() {
   };
 
   if (loading) {
-    return <p className="py-12 text-center text-gray-600">Loading item...</p>;
+    return <Spinner label="Loading item..." />;
   }
 
   if (loadError) {

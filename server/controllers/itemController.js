@@ -7,6 +7,8 @@
  */
 
 const Item = require('../models/Item');
+const Rental = require('../models/Rental');
+const { BLOCKING_STATUSES } = Rental;
 const {
   removeUploadedFiles,
   removeImages,
@@ -245,6 +247,14 @@ const deleteItem = async (req, res, next) => {
     if (!canModifyItem(req.user, item)) {
       res.status(403);
       return next(new Error('Not authorized to delete this item'));
+    }
+
+    // Keep the item while someone has it booked, so those rentals are not orphaned
+    const hasOpenRentals = await Rental.exists({ item: item._id, status: { $in: BLOCKING_STATUSES } });
+
+    if (hasOpenRentals) {
+      res.status(400);
+      return next(new Error('This item has pending or active rentals, so it cannot be deleted yet'));
     }
 
     await item.deleteOne();

@@ -9,9 +9,12 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import api, { getErrorMessage } from '../api/axios.js';
+import Spinner from '../components/Spinner.jsx';
+import { useToast } from '../context/ToastContext.jsx';
 import { formatPrice, getImageUrl } from '../utils/items.js';
 
 function MyListings() {
+  const showToast = useToast();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -48,6 +51,7 @@ function MyListings() {
     try {
       await api.delete(`/items/${item._id}`);
       setItems((prev) => prev.filter((current) => current._id !== item._id));
+      showToast('Item deleted');
     } catch (err) {
       setActionError(getErrorMessage(err));
     } finally {
@@ -77,7 +81,7 @@ function MyListings() {
       )}
 
       {loading ? (
-        <p className="mt-6 text-sm text-gray-600">Loading your listings...</p>
+        <Spinner label="Loading your listings..." />
       ) : (
         !error &&
         (items.length === 0 ? (

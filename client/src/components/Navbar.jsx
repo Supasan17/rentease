@@ -6,7 +6,7 @@
  * role (linking to their profile) and a logout button. Owners and admins
  * also get links to list a new item and to their listings, and owners get
  * a link to their rental requests, and renters to their rentals. Collapses
- * into a toggle menu on small screens.
+ * into a toggle menu below the lg breakpoint, where the links would not fit.
  */
 
 import { useState } from 'react';
@@ -97,11 +97,11 @@ function Navbar() {
           RentEase
         </Link>
 
-        <div className="hidden items-center gap-1 sm:flex">{links}</div>
+        <div className="hidden items-center gap-1 lg:flex">{links}</div>
 
         <button
           type="button"
-          className="rounded-md p-2 text-gray-700 sm:hidden"
+          className="rounded-md p-2 text-gray-700 lg:hidden"
           onClick={() => setOpen((prev) => !prev)}
           aria-label="Toggle menu"
           aria-expanded={open}
@@ -112,7 +112,7 @@ function Navbar() {
         </button>
       </nav>
 
-      {open && <div className="space-y-1 border-t border-gray-100 px-4 py-2 sm:hidden">{links}</div>}
+      {open && <div className="space-y-1 border-t border-gray-100 px-4 py-2 lg:hidden">{links}</div>}
     </header>
   );
 }

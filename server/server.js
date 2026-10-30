@@ -9,6 +9,8 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const dotenv = require('dotenv');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 
 // Load environment variables from .env file
 dotenv.config();
@@ -25,8 +27,25 @@ connectDB();
 // Create Express application instance
 const app = express();
 
-// Enable Cross-Origin Resource Sharing (CORS) for client-server communication
-app.use(cors());
+// Set security headers. Uploaded images are loaded by the client from another origin
+app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
+
+// Only allow the configured client(s) to call the API from a browser.
+// CLIENT_URL can list several origins, separated by commas.
+const allowedOrigins = (process.env.CLIENT_URL || 'http://localhost:5173')
+  .split(',')
+  .map((origin) => origin.trim());
+
+app.use(cors({ origin: allowedOrigins }));
+
+// Slow down password guessing on the login and register endpoints
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, message: 'Too many attempts, please try again later' }
+});
 
 // Parse incoming JSON payloads in request bodies
 app.use(express.json());
@@ -62,7 +81,7 @@ app.get('/api/health', (req, res) => {
 /**
  * API Routes
  */
-app.use('/api/auth', require('./routes/authRoutes'));
+app.use('/api/auth', authLimiter, require('./routes/authRoutes'));
 app.use('/api/items', require('./routes/itemRoutes'));
 app.use('/api/rentals', require('./routes/rentalRoutes'));
 app.use('/api/reviews', require('./routes/reviewRoutes'));
