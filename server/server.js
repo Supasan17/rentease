@@ -66,6 +66,7 @@ app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/items', require('./routes/itemRoutes'));
 app.use('/api/rentals', require('./routes/rentalRoutes'));
 app.use('/api/reviews', require('./routes/reviewRoutes'));
+app.use('/api/admin', require('./routes/adminRoutes'));
 
 // Centralized error handling: Catch 404 for undefined routes
 app.use(notFound);

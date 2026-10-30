@@ -55,16 +55,21 @@ function BookingForm({ item }) {
           {formatRentalDate(booking.startDate)} – {formatRentalDate(booking.endDate)} ·{' '}
           {formatPrice(booking.totalPrice)} total, including the deposit.
         </p>
-        <button
-          type="button"
-          onClick={() => {
-            setBooking(null);
-            setForm(INITIAL_FORM);
-          }}
-          className="mt-2 font-medium text-emerald-700 hover:underline"
-        >
-          Book other dates
-        </button>
+        <div className="mt-2 flex flex-wrap gap-4">
+          <Link to="/my-rentals" className="font-medium text-emerald-700 hover:underline">
+            View my rentals
+          </Link>
+          <button
+            type="button"
+            onClick={() => {
+              setBooking(null);
+              setForm(INITIAL_FORM);
+            }}
+            className="font-medium text-emerald-700 hover:underline"
+          >
+            Book other dates
+          </button>
+        </div>
       </div>
     );
   }

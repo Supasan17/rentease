@@ -70,6 +70,11 @@ const login = async (req, res, next) => {
 
     // Verify user exists and entered password matches the stored bcrypt hash
     if (user && (await user.matchPassword(password))) {
+      if (!user.isActive) {
+        res.status(403);
+        return next(new Error('This account has been deactivated'));
+      }
+
       res.status(200).json({
         success: true,
         message: 'Login successful',

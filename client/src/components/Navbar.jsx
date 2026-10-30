@@ -5,8 +5,8 @@
  * Guests see login and sign-up links; logged-in users see their name and
  * role (linking to their profile) and a logout button. Owners and admins
  * also get links to list a new item and to their listings, and owners get
- * a link to their rental requests. Collapses into a
- * toggle menu on small screens.
+ * a link to their rental requests, and renters to their rentals. Collapses
+ * into a toggle menu on small screens.
  */
 
 import { useState } from 'react';
@@ -49,6 +49,16 @@ function Navbar() {
           {user.role === 'owner' && (
             <NavLink to="/rental-requests" className={linkClass} onClick={() => setOpen(false)}>
               Requests
+            </NavLink>
+          )}
+          {user.role === 'renter' && (
+            <NavLink to="/my-rentals" className={linkClass} onClick={() => setOpen(false)}>
+              My rentals
+            </NavLink>
+          )}
+          {user.role === 'admin' && (
+            <NavLink to="/admin" className={linkClass} onClick={() => setOpen(false)}>
+              Admin
             </NavLink>
           )}
           <NavLink to="/profile" className={linkClass} onClick={() => setOpen(false)}>

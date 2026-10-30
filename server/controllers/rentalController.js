@@ -15,6 +15,7 @@
 
 const Item = require('../models/Item');
 const Rental = require('../models/Rental');
+const Review = require('../models/Review');
 const { BLOCKING_STATUSES } = Rental;
 const { calculateRentalPrice } = require('../utils/calculateRentalPrice');
 
@@ -200,12 +201,19 @@ const getMyRentals = async (req, res, next) => {
     const rentals = await Rental.find(filter)
       .populate('item', ITEM_LIST_FIELDS)
       .populate('owner', 'name email')
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .lean();
+
+    // Tell the client which returned rentals already have a review
+    const reviewedIds = await Review.distinct('rental', {
+      rental: { $in: rentals.map((rental) => rental._id) }
+    });
+    const reviewed = new Set(reviewedIds.map((id) => id.toString()));
 
     res.status(200).json({
       success: true,
       count: rentals.length,
-      rentals
+      rentals: rentals.map((rental) => ({ ...rental, reviewed: reviewed.has(rental._id.toString()) }))
     });
   } catch (error) {
     next(error);

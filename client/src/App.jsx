@@ -13,6 +13,8 @@ import ItemDetail from './pages/ItemDetail.jsx';
 import ItemForm from './pages/ItemForm.jsx';
 import MyListings from './pages/MyListings.jsx';
 import RentalRequests from './pages/RentalRequests.jsx';
+import MyRentals from './pages/MyRentals.jsx';
+import AdminDashboard from './pages/AdminDashboard.jsx';
 import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
 import Profile from './pages/Profile.jsx';
@@ -36,6 +38,12 @@ function App() {
         </Route>
         <Route element={<ProtectedRoute roles={['owner']} />}>
           <Route path="/rental-requests" element={<RentalRequests />} />
+        </Route>
+        <Route element={<ProtectedRoute roles={['renter']} />}>
+          <Route path="/my-rentals" element={<MyRentals />} />
+        </Route>
+        <Route element={<ProtectedRoute roles={['admin']} />}>
+          <Route path="/admin" element={<AdminDashboard />} />
         </Route>
         <Route path="*" element={<NotFound />} />
       </Route>

@@ -34,6 +34,11 @@ const protect = async (req, res, next) => {
         return next(new Error('Not authorized, user not found'));
       }
 
+      if (!req.user.isActive) {
+        res.status(403);
+        return next(new Error('This account has been deactivated'));
+      }
+
       return next();
     } catch (error) {
       console.error(`Auth Middleware Error: ${error.message}`);

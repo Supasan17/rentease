@@ -47,6 +47,10 @@ const userSchema = new mongoose.Schema(
       trim: true,
       maxlength: [200, 'Address cannot exceed 200 characters']
     },
+    isActive: {
+      type: Boolean,
+      default: true
+    },
     createdAt: {
       type: Date,
       default: Date.now
