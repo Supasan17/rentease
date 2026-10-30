@@ -1,7 +1,7 @@
 {
   "name": "rentease-client",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Frontend for RentEase - Household Item Rental Marketplace",
   "type": "module",
   "scripts": {

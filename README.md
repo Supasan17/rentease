@@ -116,11 +116,11 @@ These are created by the seed script. All use the password `password123`.
 
 | Role | Email |
 |---|---|
-| Admin | `admin@rentease.com` |
-| Owner | `nimal@rentease.com` |
-| Owner | `ayesha@rentease.com` |
-| Renter | `kasun@rentease.com` |
-| Renter | `dilini@rentease.com` |
+| Admin | `admin@gmail.com` |
+| Owner | `nimal@gmail.com` |
+| Owner | `ayesha@gmail.com` |
+| Renter | `kasun@gmail.com` |
+| Renter | `dilini@gmail.com` |
 
 ### Environment variables
 

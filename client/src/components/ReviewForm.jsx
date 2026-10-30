@@ -50,7 +50,10 @@ function ReviewForm({ rentalId, onReviewed }) {
           <button
             key={value}
             type="button"
-            onClick={() => setRating(value)}
+            onClick={() => {
+              setRating(value);
+              setError('');
+            }}
             aria-label={`${value} star${value === 1 ? '' : 's'}`}
             aria-pressed={rating === value}
             className={`text-2xl leading-none ${value <= rating ? 'text-amber-500' : 'text-gray-300 hover:text-amber-300'}`}

@@ -14,7 +14,7 @@ import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 
 const linkClass = ({ isActive }) =>
-  `block rounded-md px-3 py-2 text-sm font-medium ${
+  `block whitespace-nowrap rounded-md px-3 py-2 text-sm font-medium ${
     isActive ? 'bg-emerald-50 text-emerald-700' : 'text-gray-700 hover:text-emerald-600'
   }`;
 

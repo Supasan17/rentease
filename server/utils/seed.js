@@ -21,21 +21,22 @@ const User = require('../models/User');
 const Item = require('../models/Item');
 const Rental = require('../models/Rental');
 const Review = require('../models/Review');
+const { createSeedImage } = require('./seedImages');
 
 const SEED_PASSWORD = 'password123';
 
 const users = [
-  { name: 'Admin User', email: 'admin@rentease.com', role: 'admin' },
-  { name: 'Nimal Perera', email: 'nimal@rentease.com', role: 'owner' },
-  { name: 'Ayesha Fernando', email: 'ayesha@rentease.com', role: 'owner' },
-  { name: 'Kasun Silva', email: 'kasun@rentease.com', role: 'renter' },
-  { name: 'Dilini Jayasinghe', email: 'dilini@rentease.com', role: 'renter' }
+  { name: 'Admin User', email: 'admin@gmail.com', role: 'admin' },
+  { name: 'Nimal Perera', email: 'nimal@gmail.com', role: 'owner' },
+  { name: 'Ayesha Fernando', email: 'ayesha@gmail.com', role: 'owner' },
+  { name: 'Kasun Silva', email: 'kasun@gmail.com', role: 'renter' },
+  { name: 'Dilini Jayasinghe', email: 'dilini@gmail.com', role: 'renter' }
 ];
 
 // ownerEmail links each item to one of the seed owners above
 const items = [
   {
-    ownerEmail: 'nimal@rentease.com',
+    ownerEmail: 'nimal@gmail.com',
     title: 'Cordless Power Drill',
     description: '18V cordless drill with two batteries, a charger and a set of drill bits.',
     category: 'tools',
@@ -45,7 +46,7 @@ const items = [
     condition: 'like-new'
   },
   {
-    ownerEmail: 'nimal@rentease.com',
+    ownerEmail: 'nimal@gmail.com',
     title: 'Pressure Washer',
     description: '1600W pressure washer, good for cars, driveways and garden furniture.',
     category: 'tools',
@@ -55,7 +56,7 @@ const items = [
     condition: 'good'
   },
   {
-    ownerEmail: 'nimal@rentease.com',
+    ownerEmail: 'nimal@gmail.com',
     title: 'Projector with Screen',
     description: 'Full HD projector with a 100 inch pull-down screen and HDMI cable.',
     category: 'electronics',
@@ -65,7 +66,7 @@ const items = [
     condition: 'good'
   },
   {
-    ownerEmail: 'nimal@rentease.com',
+    ownerEmail: 'nimal@gmail.com',
     title: 'Folding Party Tables (set of 4)',
     description: 'Four 6 ft folding tables, ideal for birthdays, almsgivings and events.',
     category: 'party',
@@ -75,7 +76,7 @@ const items = [
     condition: 'good'
   },
   {
-    ownerEmail: 'nimal@rentease.com',
+    ownerEmail: 'nimal@gmail.com',
     title: 'Camping Tent (4 person)',
     description: 'Waterproof dome tent for four people. Packs into a carry bag.',
     category: 'sports',
@@ -85,7 +86,7 @@ const items = [
     condition: 'like-new'
   },
   {
-    ownerEmail: 'nimal@rentease.com',
+    ownerEmail: 'nimal@gmail.com',
     title: 'Wet and Dry Vacuum Cleaner',
     description: '20 litre wet and dry vacuum with blower function and attachments.',
     category: 'appliances',
@@ -95,7 +96,7 @@ const items = [
     condition: 'fair'
   },
   {
-    ownerEmail: 'ayesha@rentease.com',
+    ownerEmail: 'ayesha@gmail.com',
     title: 'Stand Mixer',
     description: '5 litre stand mixer with whisk, dough hook and flat beater.',
     category: 'kitchen',
@@ -105,7 +106,7 @@ const items = [
     condition: 'like-new'
   },
   {
-    ownerEmail: 'ayesha@rentease.com',
+    ownerEmail: 'ayesha@gmail.com',
     title: 'Large Rice Cooker (5 L)',
     description: 'Commercial size rice cooker that serves about 30 people.',
     category: 'kitchen',
@@ -115,7 +116,7 @@ const items = [
     condition: 'good'
   },
   {
-    ownerEmail: 'ayesha@rentease.com',
+    ownerEmail: 'ayesha@gmail.com',
     title: 'Bluetooth Party Speaker',
     description: 'Portable 100W speaker with lights and a wireless microphone.',
     category: 'electronics',
@@ -125,7 +126,7 @@ const items = [
     condition: 'good'
   },
   {
-    ownerEmail: 'ayesha@rentease.com',
+    ownerEmail: 'ayesha@gmail.com',
     title: 'Baby Cot',
     description: 'Wooden baby cot with mattress. Can be taken apart for transport.',
     category: 'furniture',
@@ -135,7 +136,7 @@ const items = [
     condition: 'good'
   },
   {
-    ownerEmail: 'ayesha@rentease.com',
+    ownerEmail: 'ayesha@gmail.com',
     title: 'Mountain Bike',
     description: '21 speed mountain bike with a helmet and lock included.',
     category: 'sports',
@@ -145,7 +146,7 @@ const items = [
     condition: 'fair'
   },
   {
-    ownerEmail: 'ayesha@rentease.com',
+    ownerEmail: 'ayesha@gmail.com',
     title: 'Portable Air Cooler',
     description: 'Evaporative air cooler with remote control and a 3 speed fan.',
     category: 'appliances',
@@ -183,7 +184,11 @@ const seed = async () => {
     });
 
     const createdItems = await Item.insertMany(
-      items.map(({ ownerEmail, ...item }) => ({ ...item, owner: ownerIds[ownerEmail] }))
+      items.map(({ ownerEmail, ...item }) => ({
+        ...item,
+        images: [createSeedImage(item)],
+        owner: ownerIds[ownerEmail]
+      }))
     );
 
     console.log(`Inserted ${createdUsers.length} users and ${createdItems.length} items`);
