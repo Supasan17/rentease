@@ -14,7 +14,7 @@ import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 
 const linkClass = ({ isActive }) =>
-  `block whitespace-nowrap rounded-md px-3 py-2 text-sm font-medium ${
+  `block whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium ${
     isActive ? 'bg-emerald-50 text-emerald-700' : 'text-gray-700 hover:text-emerald-600'
   }`;
 
@@ -62,15 +62,20 @@ function Navbar() {
             </NavLink>
           )}
           <NavLink to="/profile" className={linkClass} onClick={() => setOpen(false)}>
-            Hi, <span className="font-medium text-gray-900">{user.name}</span>{' '}
-            <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium capitalize text-emerald-700">
-              {user.role}
+            <span className="flex items-center gap-2">
+              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-600 text-xs font-bold uppercase text-white">
+                {user.name.charAt(0)}
+              </span>
+              <span className="font-medium text-gray-900">{user.name}</span>
+              <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium capitalize text-emerald-700">
+                {user.role}
+              </span>
             </span>
           </NavLink>
           <button
             type="button"
             onClick={handleLogout}
-            className="block w-full rounded-md px-3 py-2 text-left text-sm font-medium text-gray-700 hover:text-emerald-600"
+            className="block w-full rounded-lg px-3 py-2 text-left text-sm font-medium text-gray-700 hover:text-emerald-600"
           >
             Logout
           </button>
@@ -91,9 +96,12 @@ function Navbar() {
   );
 
   return (
-    <header className="border-b border-gray-200 bg-white">
+    <header className="sticky top-0 z-40 border-b border-gray-200/70 bg-white/85 backdrop-blur-md">
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-        <Link to="/" className="text-xl font-bold text-emerald-600">
+        <Link to="/" className="flex items-center gap-2 text-xl font-extrabold tracking-tight text-gray-900">
+          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-500 to-teal-700 text-sm text-white">
+            R
+          </span>
           RentEase
         </Link>
 
@@ -101,7 +109,7 @@ function Navbar() {
 
         <button
           type="button"
-          className="rounded-md p-2 text-gray-700 lg:hidden"
+          className="rounded-lg p-2 text-gray-700 lg:hidden"
           onClick={() => setOpen((prev) => !prev)}
           aria-label="Toggle menu"
           aria-expanded={open}

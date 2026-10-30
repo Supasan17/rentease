@@ -27,11 +27,11 @@ function ImageGallery({ images = [], title }) {
 
   return (
     <div>
-      <div className="relative aspect-[4/3] overflow-hidden rounded-lg bg-gray-100">
+      <div className="card relative aspect-[4/3] overflow-hidden">
         <img
           src={getImageUrl(images[current])}
           alt={`${title} - image ${current + 1} of ${images.length}`}
-          className="h-full w-full object-cover"
+          className="h-full w-full bg-white object-contain"
         />
         {images.length > 1 && (
           <>
@@ -52,7 +52,7 @@ function ImageGallery({ images = [], title }) {
               key={image}
               type="button"
               onClick={() => setIndex(i)}
-              className={`aspect-square overflow-hidden rounded-md border-2 ${
+              className={`aspect-square overflow-hidden rounded-lg border-2 ${
                 i === current ? 'border-emerald-600' : 'border-transparent opacity-70 hover:opacity-100'
               }`}
               aria-label={`Show image ${i + 1}`}

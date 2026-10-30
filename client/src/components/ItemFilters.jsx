@@ -10,7 +10,7 @@ import { useEffect, useState } from 'react';
 import { CATEGORIES, SORT_OPTIONS } from '../utils/items.js';
 
 const inputClass =
-  'w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500';
+  'w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/15';
 
 const TEXT_FIELDS = ['search', 'minPrice', 'maxPrice', 'city'];
 
@@ -57,44 +57,57 @@ function ItemFilters({ filters, onChange }) {
   const hasFilters = Object.values(filters).some(Boolean);
 
   return (
-    <form onSubmit={handleSubmit} className="rounded-lg border border-gray-200 bg-white p-4" noValidate>
+    <form onSubmit={handleSubmit} className="card p-4 sm:p-5" noValidate>
       <div className="flex flex-col gap-2 sm:flex-row">
         <label htmlFor="search" className="sr-only">
           Search items
         </label>
-        <input
-          id="search"
-          name="search"
-          type="search"
-          placeholder="Search drills, tents, speakers..."
-          maxLength={100}
-          value={draft.search || ''}
-          onChange={handleChange}
-          className={inputClass}
-        />
+        <div className="relative flex-1">
+          <svg className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="11" cy="11" r="7" />
+            <path strokeLinecap="round" d="m20 20-3.500-3.500" />
+          </svg>
+          <input
+            id="search"
+            name="search"
+            type="search"
+            placeholder="Search drills, tents, speakers..."
+            maxLength={100}
+            value={draft.search || ''}
+            onChange={handleChange}
+            className={`${inputClass} pl-9`}
+          />
+        </div>
         <button
           type="submit"
-          className="rounded-md bg-emerald-600 px-5 py-2 text-sm font-medium text-white hover:bg-emerald-700"
+          className="rounded-lg bg-emerald-600 px-6 py-2 text-sm font-semibold text-white transition hover:bg-emerald-700"
         >
           Search
         </button>
       </div>
 
-      <div className="mt-3 grid grid-cols-2 gap-3 md:grid-cols-5">
-        <div>
-          <label htmlFor="category" className="block text-xs font-medium text-gray-600">
-            Category
-          </label>
-          <select id="category" name="category" value={draft.category || ''} onChange={handleSelect} className={`${inputClass} mt-1 capitalize`}>
-            <option value="">All categories</option>
-            {CATEGORIES.map((category) => (
-              <option key={category} value={category}>
-                {category}
-              </option>
-            ))}
-          </select>
-        </div>
+      <div className="mt-4 flex flex-wrap gap-2" role="group" aria-label="Category">
+        {['', ...CATEGORIES].map((category) => {
+          const active = (draft.category || '') === category;
+          return (
+            <button
+              key={category || 'all'}
+              type="button"
+              aria-pressed={active}
+              onClick={() => onChange({ ...draft, category })}
+              className={`shrink-0 rounded-full border px-3.5 py-1.5 text-sm font-medium capitalize transition ${
+                active
+                  ? 'border-emerald-600 bg-emerald-600 text-white'
+                  : 'border-gray-200 bg-white text-gray-700 hover:border-emerald-400 hover:text-emerald-700'
+              }`}
+            >
+              {category || 'All'}
+            </button>
+          );
+        })}
+      </div>
 
+      <div className="mt-3 grid grid-cols-2 gap-3 md:grid-cols-4">
         <div>
           <label htmlFor="minPrice" className="block text-xs font-medium text-gray-600">
             Min price / day
@@ -116,7 +129,7 @@ function ItemFilters({ filters, onChange }) {
           <input id="city" name="city" type="text" placeholder="Any city" value={draft.city || ''} onChange={handleChange} className={`${inputClass} mt-1`} />
         </div>
 
-        <div className="col-span-2 md:col-span-1">
+        <div>
           <label htmlFor="sort" className="block text-xs font-medium text-gray-600">
             Sort by
           </label>

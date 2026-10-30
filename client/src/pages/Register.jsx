@@ -9,6 +9,7 @@
 
 import { useState } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
+import AuthShell from '../components/AuthShell.jsx';
 import { getErrorMessage } from '../api/axios.js';
 import { useAuth } from '../context/AuthContext.jsx';
 
@@ -47,7 +48,7 @@ const validate = ({ name, email, password, confirmPassword, role }) => {
 };
 
 const inputClass =
-  'mt-1 w-full rounded-md border border-gray-300 px-3 py-2 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500';
+  'mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/15';
 
 function Register() {
   const navigate = useNavigate();
@@ -98,12 +99,12 @@ function Register() {
   }
 
   return (
-    <section className="mx-auto max-w-md">
+    <AuthShell>
       <h1 className="text-2xl font-bold">Create an account</h1>
       <p className="mt-2 text-gray-600">Join RentEase to rent household items or earn from your own.</p>
 
       {serverError && (
-        <div className="mt-6 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">
+        <div className="mt-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">
           {serverError}
         </div>
       )}
@@ -115,7 +116,7 @@ function Register() {
             {ROLE_OPTIONS.map((option) => (
               <label
                 key={option.value}
-                className={`cursor-pointer rounded-md border px-3 py-2 ${
+                className={`cursor-pointer rounded-lg border px-3 py-2 ${
                   form.role === option.value
                     ? 'border-emerald-500 bg-emerald-50 ring-1 ring-emerald-500'
                     : 'border-gray-300 hover:border-emerald-400'
@@ -206,7 +207,7 @@ function Register() {
         <button
           type="submit"
           disabled={submitting}
-          className="w-full rounded-md bg-emerald-600 px-4 py-2 font-medium text-white hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
+          className="w-full rounded-lg bg-emerald-600 px-4 py-2 font-semibold text-white shadow-sm shadow-emerald-900/20 transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
         >
           {submitting ? 'Creating account...' : 'Sign up'}
         </button>
@@ -218,7 +219,7 @@ function Register() {
           Log in
         </Link>
       </p>
-    </section>
+    </AuthShell>
   );
 }
 

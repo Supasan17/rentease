@@ -9,6 +9,7 @@
 
 import { useState } from 'react';
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
+import AuthShell from '../components/AuthShell.jsx';
 import { getErrorMessage } from '../api/axios.js';
 import { useAuth } from '../context/AuthContext.jsx';
 
@@ -67,12 +68,12 @@ function Login() {
   }
 
   return (
-    <section className="mx-auto max-w-md">
+    <AuthShell>
       <h1 className="text-2xl font-bold">Log in</h1>
       <p className="mt-2 text-gray-600">Welcome back. Log in to rent or list items.</p>
 
       {serverError && (
-        <div className="mt-6 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">
+        <div className="mt-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">
           {serverError}
         </div>
       )}
@@ -89,7 +90,7 @@ function Login() {
             autoComplete="email"
             value={form.email}
             onChange={handleChange}
-            className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+            className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/15"
           />
           {fieldErrors.email && <p className="mt-1 text-sm text-red-600">{fieldErrors.email}</p>}
         </div>
@@ -105,7 +106,7 @@ function Login() {
             autoComplete="current-password"
             value={form.password}
             onChange={handleChange}
-            className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+            className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/15"
           />
           {fieldErrors.password && <p className="mt-1 text-sm text-red-600">{fieldErrors.password}</p>}
         </div>
@@ -113,7 +114,7 @@ function Login() {
         <button
           type="submit"
           disabled={submitting}
-          className="w-full rounded-md bg-emerald-600 px-4 py-2 font-medium text-white hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
+          className="w-full rounded-lg bg-emerald-600 px-4 py-2 font-semibold text-white shadow-sm shadow-emerald-900/20 transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
         >
           {submitting ? 'Logging in...' : 'Log in'}
         </button>
@@ -125,7 +126,7 @@ function Login() {
           Sign up
         </Link>
       </p>
-    </section>
+    </AuthShell>
   );
 }
 

@@ -9,7 +9,7 @@ import { STATUS_STYLES } from '../utils/rentals.js';
 function StatusBadge({ status }) {
   return (
     <span
-      className={`inline-block rounded-full px-2 py-0.5 text-xs font-medium capitalize ${
+      className={`inline-block rounded-full px-2.5 py-1 text-xs font-semibold capitalize ring-1 ring-inset ring-current/15 ${
         STATUS_STYLES[status] || 'bg-gray-100 text-gray-700'
       }`}
     >

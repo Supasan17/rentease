@@ -49,7 +49,7 @@ function BookingForm({ item }) {
 
   if (booking) {
     return (
-      <div className="mt-4 rounded-md bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+      <div className="mt-4 rounded-lg bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
         <p className="font-medium">Booking request sent to the owner.</p>
         <p className="mt-1">
           {formatRentalDate(booking.startDate)} – {formatRentalDate(booking.endDate)} ·{' '}
@@ -122,7 +122,7 @@ function BookingForm({ item }) {
   };
 
   const inputClass = (field) =>
-    `mt-1 w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 ${
+    `mt-1 w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 ${
       errors[field] ? 'border-red-400' : 'border-gray-300'
     }`;
 
@@ -130,7 +130,7 @@ function BookingForm({ item }) {
     <form onSubmit={handleSubmit} noValidate className="mt-5 border-t border-gray-200 pt-5">
       <h2 className="text-lg font-semibold">Book this item</h2>
 
-      {serverError && <p className="mt-3 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">{serverError}</p>}
+      {serverError && <p className="mt-3 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{serverError}</p>}
 
       <div className="mt-3 grid gap-3 sm:grid-cols-2">
         <label className="block text-sm font-medium text-gray-700">
@@ -173,7 +173,7 @@ function BookingForm({ item }) {
       </label>
 
       {totalDays > 0 && (
-        <dl className="mt-4 space-y-1 rounded-md bg-gray-50 px-4 py-3 text-sm">
+        <dl className="mt-4 space-y-1 rounded-lg bg-gray-50 px-4 py-3 text-sm">
           <div className="flex justify-between">
             <dt className="text-gray-600">
               {formatPrice(item.pricePerDay)} × {totalDays} day{totalDays === 1 ? '' : 's'}
@@ -194,7 +194,7 @@ function BookingForm({ item }) {
       <button
         type="submit"
         disabled={submitting}
-        className="mt-4 w-full rounded-md bg-emerald-600 px-4 py-2 font-medium text-white hover:bg-emerald-700 disabled:opacity-60"
+        className="mt-4 w-full rounded-lg bg-emerald-600 px-4 py-2 font-semibold text-white shadow-sm shadow-emerald-900/20 transition hover:bg-emerald-700 disabled:opacity-60"
       >
         {submitting ? 'Sending request...' : 'Request booking'}
       </button>

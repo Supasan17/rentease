@@ -20,9 +20,9 @@ const TABS = ['users', 'items', 'rentals'];
 
 function StatCard({ label, value }) {
   return (
-    <div className="rounded-lg border border-gray-200 bg-white p-4">
-      <p className="text-sm text-gray-500">{label}</p>
-      <p className="mt-1 text-2xl font-bold text-gray-900">{value}</p>
+    <div className="card border-l-4 border-l-emerald-500 p-5">
+      <p className="text-sm font-medium text-gray-500">{label}</p>
+      <p className="mt-1 text-3xl font-extrabold tracking-tight text-gray-900">{value}</p>
     </div>
   );
 }
@@ -32,7 +32,7 @@ function StatCard({ label, value }) {
  */
 function Table({ headers, children }) {
   return (
-    <div className="mt-4 overflow-x-auto rounded-lg border border-gray-200 bg-white">
+    <div className="mt-4 overflow-x-auto card">
       <table className="min-w-full divide-y divide-gray-200 text-left text-sm">
         <thead className="bg-gray-50 text-gray-600">
           <tr>
@@ -137,7 +137,7 @@ function AdminDashboard() {
 
   if (error) {
     return (
-      <div className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">
+      <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">
         {error}
       </div>
     );
@@ -175,7 +175,7 @@ function AdminDashboard() {
       </div>
 
       {actionError && (
-        <div className="mt-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">
+        <div className="mt-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">
           {actionError}
         </div>
       )}
@@ -198,7 +198,7 @@ function AdminDashboard() {
                     type="button"
                     onClick={() => handleToggleUser(user)}
                     disabled={busyId === user._id}
-                    className="whitespace-nowrap rounded-md border border-gray-300 px-3 py-1 text-xs font-medium text-gray-700 hover:border-emerald-500 disabled:opacity-60"
+                    className="whitespace-nowrap rounded-lg border border-gray-300 px-3 py-1 text-xs font-medium text-gray-700 hover:border-emerald-500 disabled:opacity-60"
                   >
                     {user.isActive ? 'Deactivate' : 'Activate'}
                   </button>
@@ -226,7 +226,7 @@ function AdminDashboard() {
                   type="button"
                   onClick={() => handleDeleteItem(item)}
                   disabled={busyId === item._id}
-                  className="rounded-md border border-red-200 px-3 py-1 text-xs font-medium text-red-600 hover:bg-red-50 disabled:opacity-60"
+                  className="rounded-lg border border-red-200 px-3 py-1 text-xs font-medium text-red-600 hover:bg-red-50 disabled:opacity-60"
                 >
                   Delete
                 </button>
@@ -238,7 +238,7 @@ function AdminDashboard() {
 
       {tab === 'rentals' &&
         (data.rentals.length === 0 ? (
-          <p className="mt-4 rounded-lg border border-dashed border-gray-300 bg-white px-6 py-8 text-center text-sm text-gray-600">
+          <p className="mt-4 rounded-2xl border border-dashed border-gray-300 bg-white px-6 py-8 text-center text-sm text-gray-600">
             No rentals yet.
           </p>
         ) : (

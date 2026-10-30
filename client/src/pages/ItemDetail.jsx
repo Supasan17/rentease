@@ -25,9 +25,9 @@ const formatDate = (date) =>
  */
 function Fact({ label, children }) {
   return (
-    <div>
-      <dt className="text-gray-500">{label}</dt>
-      <dd className="mt-0.5 font-medium capitalize text-gray-900">{children}</dd>
+    <div className="rounded-xl bg-white p-3 ring-1 ring-gray-200/80">
+      <dt className="text-xs font-medium uppercase tracking-wide text-gray-500">{label}</dt>
+      <dd className="mt-1 font-semibold capitalize text-gray-900">{children}</dd>
     </div>
   );
 }
@@ -48,13 +48,13 @@ function Reviews({ reviews, averageRating, numReviews }) {
       </div>
 
       {reviews.length === 0 ? (
-        <p className="mt-4 rounded-lg border border-dashed border-gray-300 bg-white px-6 py-8 text-center text-sm text-gray-600">
+        <p className="mt-4 rounded-2xl border border-dashed border-gray-300 bg-white px-6 py-8 text-center text-sm text-gray-600">
           No reviews yet. Renters can review this item after they return it.
         </p>
       ) : (
         <ul className="mt-4 space-y-4">
           {reviews.map((review) => (
-            <li key={review._id} className="rounded-lg border border-gray-200 bg-white p-4">
+            <li key={review._id} className="card p-4">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <p className="font-medium text-gray-900">{review.reviewer?.name || 'Former renter'}</p>
                 <p className="text-sm text-gray-500">{formatDate(review.createdAt)}</p>
@@ -132,7 +132,7 @@ function ItemDetail() {
         {canEdit && (
           <Link
             to={`/items/${item._id}/edit`}
-            className="rounded-md border border-emerald-600 px-3 py-1.5 text-sm font-medium text-emerald-700 hover:bg-emerald-50"
+            className="rounded-lg border border-emerald-600 px-3 py-1.5 text-sm font-medium text-emerald-700 hover:bg-emerald-50"
           >
             Edit item
           </Link>
@@ -159,7 +159,7 @@ function ItemDetail() {
             )}
           </p>
 
-          <div className="mt-6 rounded-lg border border-gray-200 bg-white p-5">
+          <div className="card mt-6 p-6">
             <p>
               <span className="text-3xl font-bold text-gray-900">{formatPrice(item.pricePerDay)}</span>
               <span className="text-gray-500"> / day</span>

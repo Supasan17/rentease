@@ -6,7 +6,7 @@
  */
 
 const buttonClass =
-  'min-w-9 rounded-md border px-3 py-1.5 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-50';
+  'min-w-9 rounded-lg border px-3 py-1.5 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-50';
 
 /**
  * Page numbers to show: the first, the last, and two either side of the

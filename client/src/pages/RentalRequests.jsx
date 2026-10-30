@@ -103,7 +103,7 @@ function RentalRequests() {
             id="status"
             value={status}
             onChange={(e) => setStatus(e.target.value)}
-            className="mt-1 rounded-md border border-gray-300 px-3 py-2 text-sm capitalize focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+            className="mt-1 rounded-lg border border-gray-300 px-3 py-2 text-sm capitalize focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/15"
           >
             <option value="">All</option>
             {RENTAL_STATUSES.map((value) => (
@@ -116,7 +116,7 @@ function RentalRequests() {
       </div>
 
       {(error || actionError) && (
-        <div className="mt-6 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">
+        <div className="mt-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">
           {error || actionError}
         </div>
       )}
@@ -126,7 +126,7 @@ function RentalRequests() {
       ) : (
         !error &&
         (rentals.length === 0 ? (
-          <div className="mt-6 rounded-lg border border-dashed border-gray-300 bg-white px-6 py-12 text-center">
+          <div className="mt-6 rounded-2xl border border-dashed border-gray-300 bg-white px-6 py-12 text-center">
             <p className="font-medium text-gray-900">No rental requests</p>
             <p className="mt-1 text-sm text-gray-600">
               {status ? `You have no ${status} rentals.` : 'Requests for your items will show up here.'}
@@ -135,7 +135,7 @@ function RentalRequests() {
         ) : (
           <ul className="mt-6 space-y-4">
             {rentals.map((rental) => (
-              <li key={rental._id} className="rounded-lg border border-gray-200 bg-white p-4">
+              <li key={rental._id} className="card p-4">
                 <div className="flex flex-wrap items-start justify-between gap-2">
                   <div className="min-w-0">
                     {rental.item ? (
@@ -179,7 +179,7 @@ function RentalRequests() {
                 </dl>
 
                 {rental.message && (
-                  <p className="mt-3 rounded-md bg-gray-50 px-3 py-2 text-sm text-gray-700">“{rental.message}”</p>
+                  <p className="mt-3 rounded-lg bg-gray-50 px-3 py-2 text-sm text-gray-700">“{rental.message}”</p>
                 )}
 
                 {OWNER_ACTIONS[rental.status] && (
@@ -190,7 +190,7 @@ function RentalRequests() {
                         type="button"
                         onClick={() => handleAction(rental, action)}
                         disabled={busyId === rental._id}
-                        className={`rounded-md px-3 py-1.5 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-60 ${ACTION_STYLES[action]}`}
+                        className={`rounded-lg px-3 py-1.5 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-60 ${ACTION_STYLES[action]}`}
                       >
                         {ACTION_LABELS[action]}
                       </button>

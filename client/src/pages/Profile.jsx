@@ -48,7 +48,7 @@ const validatePassword = ({ currentPassword, newPassword, confirmPassword }) => 
 };
 
 const inputClass =
-  'mt-1 w-full rounded-md border border-gray-300 px-3 py-2 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500';
+  'mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/15';
 
 const EMPTY_PASSWORD_FORM = { currentPassword: '', newPassword: '', confirmPassword: '' };
 
@@ -77,7 +77,7 @@ function Notice({ type, children }) {
       ? 'border-red-200 bg-red-50 text-red-700'
       : 'border-emerald-200 bg-emerald-50 text-emerald-700';
   return (
-    <div className={`mt-4 rounded-md border px-4 py-3 text-sm ${styles}`} role={type === 'error' ? 'alert' : 'status'}>
+    <div className={`mt-4 rounded-lg border px-4 py-3 text-sm ${styles}`} role={type === 'error' ? 'alert' : 'status'}>
       {children}
     </div>
   );
@@ -169,7 +169,7 @@ function Profile() {
         <p className="mt-2 text-gray-600">Manage your account details and password.</p>
       </div>
 
-      <div className="rounded-lg border border-gray-200 bg-white p-6">
+      <div className="card p-6">
         <h2 className="text-lg font-semibold">Account</h2>
         <dl className="mt-4 grid gap-4 text-sm sm:grid-cols-3">
           <div>
@@ -193,7 +193,7 @@ function Profile() {
         </dl>
       </div>
 
-      <div className="rounded-lg border border-gray-200 bg-white p-6">
+      <div className="card p-6">
         <h2 className="text-lg font-semibold">Personal details</h2>
         <Notice type={detailStatus.type}>{detailStatus.message}</Notice>
 
@@ -229,14 +229,14 @@ function Profile() {
           <button
             type="submit"
             disabled={savingDetails}
-            className="rounded-md bg-emerald-600 px-4 py-2 font-medium text-white hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
+            className="rounded-lg bg-emerald-600 px-4 py-2 font-semibold text-white shadow-sm shadow-emerald-900/20 transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {savingDetails ? 'Saving...' : 'Save changes'}
           </button>
         </form>
       </div>
 
-      <div className="rounded-lg border border-gray-200 bg-white p-6">
+      <div className="card p-6">
         <h2 className="text-lg font-semibold">Change password</h2>
         <Notice type={passwordStatus.type}>{passwordStatus.message}</Notice>
 
@@ -272,7 +272,7 @@ function Profile() {
           <button
             type="submit"
             disabled={savingPassword}
-            className="rounded-md bg-emerald-600 px-4 py-2 font-medium text-white hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
+            className="rounded-lg bg-emerald-600 px-4 py-2 font-semibold text-white shadow-sm shadow-emerald-900/20 transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {savingPassword ? 'Updating...' : 'Change password'}
           </button>

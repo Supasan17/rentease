@@ -40,7 +40,7 @@ function ReviewForm({ rentalId, onReviewed }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="mt-4 rounded-md bg-gray-50 p-4">
+    <form onSubmit={handleSubmit} noValidate className="mt-4 rounded-lg bg-gray-50 p-4">
       <h3 className="text-sm font-semibold text-gray-900">Review this item</h3>
 
       {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
@@ -70,14 +70,14 @@ function ReviewForm({ rentalId, onReviewed }) {
           maxLength={MAX_COMMENT_LENGTH}
           value={comment}
           onChange={(e) => setComment(e.target.value)}
-          className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+          className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
         />
       </label>
 
       <button
         type="submit"
         disabled={submitting}
-        className="mt-3 rounded-md bg-emerald-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-emerald-700 disabled:opacity-60"
+        className="mt-3 rounded-lg bg-emerald-600 px-3 py-1.5 text-sm font-semibold text-white shadow-sm shadow-emerald-900/20 transition hover:bg-emerald-700 disabled:opacity-60"
       >
         {submitting ? 'Sending...' : 'Submit review'}
       </button>

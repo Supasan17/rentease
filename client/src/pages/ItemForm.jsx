@@ -95,7 +95,7 @@ const toFormData = (form, images) => {
 };
 
 const inputClass =
-  'mt-1 w-full rounded-md border border-gray-300 px-3 py-2 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500';
+  'mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/15';
 
 /**
  * Label, control and error message for one form field.
@@ -248,12 +248,12 @@ function ItemForm() {
       </p>
 
       {serverError && (
-        <div className="mt-6 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">
+        <div className="mt-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">
           {serverError}
         </div>
       )}
 
-      <form onSubmit={handleSubmit} noValidate className="mt-6 space-y-5 rounded-lg border border-gray-200 bg-white p-6">
+      <form onSubmit={handleSubmit} noValidate className="mt-6 space-y-5 card p-6">
         <Field id="title" label="Title" error={errors.title}>
           <input id="title" name="title" type="text" className={inputClass} value={form.title} onChange={handleChange} />
         </Field>
@@ -353,7 +353,7 @@ function ItemForm() {
             multiple
             accept=".jpg,.jpeg,.png,.webp"
             onChange={handleImageChange}
-            className="mt-1 block w-full text-sm text-gray-600 file:mr-4 file:rounded-md file:border-0 file:bg-emerald-50 file:px-4 file:py-2 file:font-medium file:text-emerald-700 hover:file:bg-emerald-100"
+            className="mt-1 block w-full text-sm text-gray-600 file:mr-4 file:rounded-lg file:border-0 file:bg-emerald-50 file:px-4 file:py-2 file:font-medium file:text-emerald-700 hover:file:bg-emerald-100"
           />
           <p className="mt-1 text-xs text-gray-500">
             Up to {MAX_IMAGES} images, jpg, png or webp, 5 MB each.
@@ -366,7 +366,7 @@ function ItemForm() {
             <p className="text-sm font-medium text-gray-700">{previews.length > 0 ? 'New images' : 'Current images'}</p>
             <div className="mt-2 grid grid-cols-3 gap-3 sm:grid-cols-5">
               {(previews.length > 0 ? previews : currentImages.map(getImageUrl)).map((src) => (
-                <img key={src} src={src} alt="" className="aspect-square w-full rounded-md object-cover" />
+                <img key={src} src={src} alt="" className="aspect-square w-full rounded-lg object-cover" />
               ))}
             </div>
           </div>
@@ -376,13 +376,13 @@ function ItemForm() {
           <button
             type="submit"
             disabled={submitting}
-            className="rounded-md bg-emerald-600 px-4 py-2 font-medium text-white hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
+            className="rounded-lg bg-emerald-600 px-4 py-2 font-semibold text-white shadow-sm shadow-emerald-900/20 transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {submitting ? 'Saving...' : isEdit ? 'Save changes' : 'Create listing'}
           </button>
           <Link
             to={isEdit ? `/items/${id}` : '/'}
-            className="rounded-md px-4 py-2 font-medium text-gray-700 hover:text-emerald-600"
+            className="rounded-lg px-4 py-2 font-medium text-gray-700 hover:text-emerald-600"
           >
             Cancel
           </Link>
